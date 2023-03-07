@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\User;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\JsonResponse;
 use App\Http\Traits\HttpResponses;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use App\Http\Resources\User\UserResource;
 use App\Http\Resources\User\UserCollection;
 use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\DeleteUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 
 class UserController extends Controller
@@ -103,11 +106,21 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param DeleteUserRequest $request
      * @param  User $user
      * @return JsonResponse
      */
-    public function destroy(User $user): JsonResponse
+    public function destroy(DeleteUserRequest $request, User $user): JsonResponse
     {
+        $request->validated($request->all());
+
+        if(!Hash::check($request->password, $user->password)){
+            return $this->unprocessableResponse([], 'The password is incorrect.');
+        }
+
+        $user->forceFill(['remember_token' => Str::random(60)])->save();
+        $user->delete();
+
         return $this->noContentResponse();
     }
 }
