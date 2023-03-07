@@ -14,6 +14,6 @@ use App\Http\Controllers\User\UserController;
 |
 */
 
-Route::middleware('auth:sanctum', 'verified')->group(function () {
+Route::middleware('auth:sanctum', 'verified', 'user.active')->group(function () {
     Route::resources(['users' => UserController::class], ['except' => ['create', 'edit']]);
 });

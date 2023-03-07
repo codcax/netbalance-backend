@@ -58,7 +58,12 @@ class LoginRequest extends FormRequest
 
         if ($user->trashed() && Hash::check($this->password, $user->password)) {
             $user->restore();
-            $user->forceFill(['remember_token' => Str::random(60)])->save();
+            $user->forceFill(
+                [
+                    'remember_token' => Str::random(60),
+                    'is_active' => true
+                ]
+            )->save();
         }
 
         if (!Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {

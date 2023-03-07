@@ -114,12 +114,28 @@ class UserController extends Controller
     {
         $request->validated($request->all());
 
-        if(!Hash::check($request->password, $user->password)){
+        if (!Hash::check($request->password, $user->password)) {
             return $this->unprocessableResponse([], 'The password is incorrect.');
         }
 
-        $user->forceFill(['remember_token' => Str::random(60)])->save();
-        $user->delete();
+        $userDeleted = rescue(function () use ($request, $user) {
+            $user->forceFill(
+                [
+                    'remember_token' => Str::random(60),
+                    'is_active' => false
+                ]
+            )->save();
+            $user->delete();
+            return true;
+        }, false);
+
+        if (!$userDeleted) {
+            return $this->errorResponse([], 'Record could not be deleted.');
+        }
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
 
         return $this->noContentResponse();
     }

@@ -47,6 +47,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'lastname' => 'string',
         'email' => 'string',
         'email_verified_at' => 'datetime',
+        'is_active' => 'boolean'
     ];
 
     /**
