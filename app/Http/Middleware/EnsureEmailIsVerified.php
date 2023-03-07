@@ -3,12 +3,14 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\Request;
+use App\Http\Traits\HttpResponses;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureEmailIsVerified
 {
+    use HttpResponses;
     /**
      * Handle an incoming request.
      *
@@ -19,7 +21,7 @@ class EnsureEmailIsVerified
         if (! $request->user() ||
             ($request->user() instanceof MustVerifyEmail &&
             ! $request->user()->hasVerifiedEmail())) {
-            return response()->json(['message' => 'Your email address is not verified.'], 409);
+            return $this->conflictResponse([], 'Your email address is not verified.');
         }
 
         return $next($request);

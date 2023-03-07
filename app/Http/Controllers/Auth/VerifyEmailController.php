@@ -2,22 +2,29 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use App\Http\Traits\HttpResponses;
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Verified;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 class VerifyEmailController extends Controller
 {
+    use HttpResponses;
+
     /**
      * Mark the authenticated user's email address as verified.
+     * 
+     * @param EmailVerificationRequest $request
+     * @return JsonResponse
      */
-    public function __invoke(EmailVerificationRequest $request): RedirectResponse
+    public function store(EmailVerificationRequest $request): RedirectResponse
     {
         if ($request->user()->hasVerifiedEmail()) {
             return redirect()->intended(
-                config('app.frontend_url').RouteServiceProvider::HOME.'?verified=1'
+                config('app.frontend_url') . '\login?verified=1'
             );
         }
 
@@ -26,7 +33,26 @@ class VerifyEmailController extends Controller
         }
 
         return redirect()->intended(
-            config('app.frontend_url').RouteServiceProvider::HOME.'?verified=1'
+            config('app.frontend_url') . '\login?verified=1'
         );
+    }
+
+    /**
+     * Send a new email verification notification.
+     * 
+     * @param Request $request
+     * @return JsonResponse|RedirectResponse
+     */
+    public function send(Request $request): JsonResponse|RedirectResponse
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return redirect()->intended(
+                config('app.frontend_url') . '\dashboard'
+            );
+        }
+
+        $request->user()->sendEmailVerificationNotification();
+
+        return $this->noContentResponse();
     }
 }
