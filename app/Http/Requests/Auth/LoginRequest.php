@@ -37,6 +37,7 @@ class LoginRequest extends FormRequest
                     ->numbers()
                     ->symbols()
             ],
+            'remember' => ['required', 'boolean']
         ];
     }
 
