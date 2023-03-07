@@ -2,24 +2,28 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use App\Http\Traits\HttpResponses;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
+use App\Http\Requests\Auth\ForgotPasswordRequest;
 
-class PasswordResetLinkController extends Controller
+class ForgotPasswordController extends Controller
 {
+    use HttpResponses;
     /**
      * Handle an incoming password reset link request.
-     *
+     * 
+     * @param ForgotPasswordRequestRequest $request
+     * @return JsonResponse
+     * 
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): JsonResponse
+    public function store(ForgotPasswordRequest $request): JsonResponse
     {
-        $request->validate([
-            'email' => ['required', 'email'],
-        ]);
+        $request->validated($request->all());
 
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we
@@ -29,11 +33,9 @@ class PasswordResetLinkController extends Controller
         );
 
         if ($status != Password::RESET_LINK_SENT) {
-            throw ValidationException::withMessages([
-                'email' => [__($status)],
-            ]);
+            return $this->unprocessableResponse([], __($status));
         }
 
-        return response()->json(['status' => __($status)]);
+        return $this->noContentResponse();
     }
 }
