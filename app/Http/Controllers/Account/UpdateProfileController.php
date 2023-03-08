@@ -24,9 +24,21 @@ class UpdateProfileController extends Controller
     {
         $request->validated($request->all());
 
-        User::where('id',Auth::user()->id)->update(
-            $request->all()
-        );
+        $user = User::where('id', Auth::user()->id)->first();
+
+        $user->update([
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname
+        ]);
+
+        if ($request->email) {
+            $user->forceFill([
+                'email' => $request->email,
+                'email_verified_at' => NULL
+            ])->save();
+
+            $user->sendEmailVerificationNotification();
+        }
 
         return $this->noContentResponse();
     }

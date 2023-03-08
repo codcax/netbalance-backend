@@ -24,8 +24,9 @@ class UpdateProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'firstname' => 'required_without:lastname|min:4|alpha_num',
-            'lastname' => 'required_without:firstname|min:4|alpha_num'
+            'firstname' => 'required_without_all:lastname,email|min:4|alpha_num',
+            'lastname' => 'required_without_all:firstname,email|min:4|alpha_num',
+            'email' => 'required_without_all:firstname,lastname|string|email|unique:users,email',
         ];
     }
 }
