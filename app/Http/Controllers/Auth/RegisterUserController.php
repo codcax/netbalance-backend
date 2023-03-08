@@ -22,7 +22,7 @@ class RegisterUserController extends Controller
      * 
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function __invoke(RegisterRequest $request): JsonResponse
+    public function store(RegisterRequest $request): JsonResponse
     {
         $request->validated($request->all());
 

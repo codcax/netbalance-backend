@@ -10,7 +10,7 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
-class VerifyEmailController extends Controller
+class EmailVerificationController extends Controller
 {
     use HttpResponses;
 
@@ -20,7 +20,7 @@ class VerifyEmailController extends Controller
      * @param EmailVerificationRequest $request
      * @return JsonResponse
      */
-    public function __invoke(EmailVerificationRequest $request): RedirectResponse
+    public function store(EmailVerificationRequest $request): RedirectResponse
     {
         if ($request->user()->hasVerifiedEmail()) {
             return redirect()->intended(

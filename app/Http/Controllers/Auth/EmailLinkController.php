@@ -8,7 +8,7 @@ use App\Http\Traits\HttpResponses;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 
-class VerifyEmailLinkController extends Controller
+class EmailLinkController extends Controller
 {
     use HttpResponses;
 
@@ -18,7 +18,7 @@ class VerifyEmailLinkController extends Controller
      * @param Request $request
      * @return JsonResponse|RedirectResponse
      */
-    public function __invoke(Request $request): JsonResponse|RedirectResponse
+    public function store(Request $request): JsonResponse|RedirectResponse
     {
         if ($request->user()->hasVerifiedEmail()) {
             return redirect()->intended(

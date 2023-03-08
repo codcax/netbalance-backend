@@ -24,7 +24,7 @@ class ResetPasswordController extends Controller
      * 
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function __invoke(ResetPasswordRequest $request): JsonResponse
+    public function store(ResetPasswordRequest $request): JsonResponse
     {
         $request->validated($request->all());
 
