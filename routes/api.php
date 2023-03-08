@@ -3,6 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Account\UserAccountController;
+use App\Http\Controllers\Account\UpdateProfileController;
+use App\Http\Controllers\Account\ChangePasswordController;
+use App\Http\Controllers\Account\DeactivateAccountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,4 +25,11 @@ use App\Http\Controllers\User\UserController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/account', UserAccountController::class);
+    Route::post('/account/update-profile', [UpdateProfileController::class, 'store']);
+    Route::post('/account/update-password', [ChangePasswordController::class, 'store']);
+    Route::delete('/account/deactivate', [DeactivateAccountController::class, 'destroy']);
 });
