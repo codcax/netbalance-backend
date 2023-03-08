@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Account\UserAccountController;
 use App\Http\Controllers\Account\UpdateProfileController;
 use App\Http\Controllers\Account\ChangePasswordController;
