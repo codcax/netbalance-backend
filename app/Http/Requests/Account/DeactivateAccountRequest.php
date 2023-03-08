@@ -24,10 +24,7 @@ class DeactivateAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'password' => [
-                'required',
-                'confirmed'
-            ],
+            'password' => 'required|confirmed'
         ];
     }
 }
