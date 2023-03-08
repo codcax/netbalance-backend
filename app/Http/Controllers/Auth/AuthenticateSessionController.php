@@ -37,12 +37,6 @@ class AuthenticateSessionController extends Controller
 
         if ($user->trashed()) {
             $user->restore();
-            $user->forceFill(
-                [
-                    'remember_token' => Str::random(60),
-                    'is_active' => true
-                ]
-            )->save();
         }
 
         $request->session()->regenerate();
