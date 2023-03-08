@@ -31,7 +31,7 @@ class ResetPasswordController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (Hash::check($request->password, $user->password)) {
-            return $this->unprocessableResponse([], 'Your new password cannot be same as current password.');
+            return $this->unprocessableResponse([], 'Your new password cannot be same as old password.');
         }
 
         // Here we will attempt to reset the user's password. If it is successful we

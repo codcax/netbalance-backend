@@ -26,14 +26,12 @@ class RegisterUserController extends Controller
     {
         $request->validated($request->all());
 
-        $user = rescue(function () use ($request) {
-            return User::create([
-                'firstname' => $request->firstname,
-                'lastname' => $request->lastname,
-                'email' => $request->email,
-                'password' => $request->password
-            ]);
-        }, false);
+        $user = User::create([
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'email' => $request->email,
+            'password' => $request->password
+        ]);
 
         if (!$user) {
             return $this->unprocessableResponse([], 'Record cannot be created.');
@@ -41,6 +39,6 @@ class RegisterUserController extends Controller
 
         event(new Registered($user));
 
-        return $this->successResponse(new UserResource($user));
+        return $this->noContentResponse();
     }
 }

@@ -25,15 +25,6 @@ class ForgotPasswordController extends Controller
     {
         $request->validated($request->all());
 
-        $user = User::withTrashed()
-            ->where('email', $request->email)
-            ->first();
-
-        if ($user->trashed()) {
-            $user->restore();
-            $user->forceFill(['remember_token' => Str::random(60)])->save();
-        }
-
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we
         // need to show to the user. Finally, we'll send out a proper response.
@@ -41,7 +32,7 @@ class ForgotPasswordController extends Controller
             $request->only('email')
         );
 
-        if ($status != Password::RESET_LINK_SENT) {
+        if ($status != (Password::RESET_LINK_SENT || Password::INVALID_USER)) {
             return $this->unprocessableResponse([], __($status));
         }
 

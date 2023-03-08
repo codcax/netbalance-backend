@@ -27,26 +27,22 @@ class AuthenticateSessionController extends Controller
     {
         $request->validated($request->all());
 
-        $user = rescue(function () use ($request) {
-            $user = User::withTrashed()
-                ->where('email', $request->email)
-                ->first();
-
-            if ($user && $user->trashed() && Hash::check($request->password, $user->password)) {
-                $user->restore();
-                $user->forceFill(
-                    [
-                        'remember_token' => Str::random(60),
-                        'is_active' => true
-                    ]
-                )->save();
-            }
-
-            return true;
-        }, false);
+        $user = User::withTrashed()
+            ->where('email', $request->email)
+            ->first();
 
         if (!$user || !Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             return $this->unauthorizedResponse([], __('auth.failed'));
+        }
+
+        if ($user->trashed()) {
+            $user->restore();
+            $user->forceFill(
+                [
+                    'remember_token' => Str::random(60),
+                    'is_active' => true
+                ]
+            )->save();
         }
 
         $request->session()->regenerate();
