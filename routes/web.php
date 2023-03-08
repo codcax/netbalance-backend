@@ -1,13 +1,16 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\EmailLinkController;
-use App\Http\Controllers\Account\AccountController;
 use App\Http\Controllers\Auth\RegisterUserController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Account\UserAccountController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Account\UpdateProfileController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\AuthenticateSessionController;
+use App\Http\Controllers\Account\DeactivateAccountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,7 +52,7 @@ Route::post('/email/link', [EmailLinkController::class, 'store'])
     ->name('verification.send');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/account', [AccountController::class, 'index']);
-    Route::put('/account/update', [AccountController::class, 'update']);
-    Route::post('/account/deactivate', [AccountController::class, 'destroy']);
+    Route::get('/account', UserAccountController::class);
+    Route::put('/account/update-profile', [UpdateProfileController::class, 'update']);
+    Route::delete('/account/deactivate', [DeactivateAccountController::class, 'destroy']);
 });

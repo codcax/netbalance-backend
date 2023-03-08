@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests\Account;
 
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Foundation\Http\FormRequest;
 
-class DeleteAccountRequest extends FormRequest
+class UpdateProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,10 +24,8 @@ class DeleteAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'password' => [
-                'required',
-                'confirmed'
-            ],
+            'firstname' => 'required_without:lastname|min:4|alpha_num',
+            'lastname' => 'required_without:firstname|min:4|alpha_num'
         ];
     }
 }
