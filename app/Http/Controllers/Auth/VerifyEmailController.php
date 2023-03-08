@@ -20,7 +20,7 @@ class VerifyEmailController extends Controller
      * @param EmailVerificationRequest $request
      * @return JsonResponse
      */
-    public function store(EmailVerificationRequest $request): RedirectResponse
+    public function __invoke(EmailVerificationRequest $request): RedirectResponse
     {
         if ($request->user()->hasVerifiedEmail()) {
             return redirect()->intended(
@@ -35,24 +35,5 @@ class VerifyEmailController extends Controller
         return redirect()->intended(
             config('app.frontend_url') . '\login?verified=1'
         );
-    }
-
-    /**
-     * Send a new email verification notification.
-     * 
-     * @param Request $request
-     * @return JsonResponse|RedirectResponse
-     */
-    public function send(Request $request): JsonResponse|RedirectResponse
-    {
-        if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(
-                config('app.frontend_url') . '\dashboard'
-            );
-        }
-
-        $request->user()->sendEmailVerificationNotification();
-
-        return $this->noContentResponse();
     }
 }

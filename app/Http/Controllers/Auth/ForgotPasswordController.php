@@ -21,7 +21,7 @@ class ForgotPasswordController extends Controller
      * 
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(ForgotPasswordRequest $request): JsonResponse
+    public function __invoke(ForgotPasswordRequest $request): JsonResponse
     {
         $request->validated($request->all());
 
