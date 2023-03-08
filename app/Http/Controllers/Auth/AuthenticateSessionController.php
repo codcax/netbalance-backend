@@ -45,7 +45,7 @@ class AuthenticateSessionController extends Controller
             return true;
         }, false);
 
-        if ($user || !Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+        if (!$user || !Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             return $this->unauthorizedResponse([], __('auth.failed'));
         }
 
