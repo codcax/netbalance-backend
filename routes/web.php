@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\EmailLinkController;
+use App\Http\Controllers\Account\AccountController;
 use App\Http\Controllers\Auth\RegisterUserController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -46,3 +47,9 @@ Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'st
 Route::post('/email/link', [EmailLinkController::class, 'store'])
     ->middleware(['auth', 'throttle:6,1'])
     ->name('verification.send');
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/account', [AccountController::class, 'index']);
+    Route::put('/account/update', [AccountController::class, 'update']);
+    Route::post('/account/deactivate', [AccountController::class, 'destroy']);
+});
