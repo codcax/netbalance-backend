@@ -144,4 +144,16 @@ trait HttpResponses
     {
         return $this->errorResponse($data, $message, Response::HTTP_UNPROCESSABLE_ENTITY);
     }
+
+    /**
+     * Response with status code 429.
+     *
+     * @param  mixed  $data
+     * @param  string  $message
+     * @return JsonResponse
+     */
+    public function tooManyRequestsResponse(mixed $data, string $message = ''): JsonResponse
+    {
+        return $this->errorResponse($data, $message, Response::HTTP_TOO_MANY_REQUESTS);
+    }
 }
