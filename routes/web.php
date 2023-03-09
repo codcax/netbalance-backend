@@ -1,12 +1,7 @@
 <?php
 
+use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\EmailLinkController;
-use App\Http\Controllers\Auth\RegisterUserController;
-use App\Http\Controllers\Auth\ResetPasswordController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\Auth\EmailVerificationController;
-use App\Http\Controllers\Auth\AuthenticateSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,30 +14,13 @@ use App\Http\Controllers\Auth\AuthenticateSessionController;
 |
 */
 
-Route::post('/register', [RegisterUserController::class, 'store'])
-    ->middleware(['guest', 'throttle:3,1'])
-    ->name('register');
+Route::get('/', function () {
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register')
+    ]);
+});
 
-Route::post('/login', [AuthenticateSessionController::class, 'store'])
-    ->middleware(['guest'])
-    ->name('login');
-
-Route::post('/logout', [AuthenticateSessionController::class, 'destroy'])
-    ->middleware('auth')
-    ->name('logout');
-
-Route::post('/forgot-password', [ForgotPasswordController::class, 'store'])
-    ->middleware(['guest', 'throttle:3,1'])
-    ->name('password.email');
-
-Route::post('/reset-password', [ResetPasswordController::class, 'store'])
-    ->middleware(['guest', 'throttle:3,1'])
-    ->name('password.store');
-
-Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'store'])
-    ->middleware(['auth', 'signed', 'throttle:6,1'])
-    ->name('verification.verify');
-
-Route::post('/email/link', [EmailLinkController::class, 'store'])
-    ->middleware(['auth', 'throttle:6,1'])
-    ->name('verification.send');
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');

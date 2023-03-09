@@ -3,26 +3,32 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
-use App\Http\Traits\HttpResponses;
+use Inertia\Inertia;
+use Inertia\Response;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Registered;
-use App\Http\Resources\User\UserResource;
+use App\Providers\RouteServiceProvider;
 use App\Http\Requests\Auth\RegisterRequest;
 
 class RegisterUserController extends Controller
 {
-    use HttpResponses;
+
+    /**
+     * Display the registration view.
+     */
+    public function create(): Response
+    {
+        return Inertia::render('Auth/Register');
+    }
 
     /**
      * Handle an incoming registration request.
      *
-     * @param RegisterRequest $request
-     * @return JsonResponse
-     * 
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(RegisterRequest $request): JsonResponse
+    public function store(RegisterRequest $request): RedirectResponse
     {
         $request->validated($request->all());
 
@@ -33,12 +39,10 @@ class RegisterUserController extends Controller
             'password' => $request->password
         ]);
 
-        if (!$user) {
-            return $this->unprocessableResponse([], 'Record cannot be created.');
-        }
-
         event(new Registered($user));
 
-        return $this->noContentResponse();
+        Auth::login($user);
+
+        return redirect(RouteServiceProvider::HOME);
     }
 }
